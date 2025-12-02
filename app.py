@@ -1,44 +1,72 @@
 import streamlit as st
 import pandas as pd
+import altair as alt
 
-st.set_page_config(page_title="Análise Exploratória Interativa", layout="wide")
+st.set_page_config(
+    page_title="Análise Exploratória Interativa",
+    layout="wide"
+)
 
-st.title("Análise Exploratória Interativa com Streamlit")
+st.title("📊 Análise Exploratória Interativa com Streamlit")
 
 st.write("""
-Este aplicativo realiza **Análise Exploratória de Dados (EDA)** de forma simples e interativa.
-Faça upload de um arquivo CSV para começar.
+Aplicativo simples para realizar uma **Análise Exploratória de Dados (EDA)**.
+Envie um arquivo CSV para visualizar tabelas, estatísticas e gráficos interativos.
 """)
 
-# 1. Upload
 uploaded_file = st.file_uploader("Envie seu arquivo .csv", type=["csv"])
 
 if uploaded_file:
-    # 2. Estruturar DataFrame
     df = pd.read_csv(uploaded_file)
 
-    st.subheader("Primeiras linhas do DataFrame")
-    st.write(df.head())  # 3. Exibir primeiras linhas
+    st.subheader("🧾 Primeiras linhas do DataFrame")
+    st.dataframe(df.head())
 
-    # 4. Estatísticas descritivas
-    st.subheader("Estatísticas Descritivas")
+    st.subheader("📈 Estatísticas Descritivas")
     st.write(df.describe(include="all"))
 
-    # 5. Visualização interativa
-    st.subheader("Visualização Interativa")
+    st.subheader("📊 Visualização Interativa")
 
-    # pega só colunas numéricas
-    numeric_cols = df.select_dtypes(include="number").columns
+    numeric_cols = df.select_dtypes(include="number").columns.tolist()
 
-    if len(numeric_cols) >= 2:
-        x = st.selectbox("Selecione a variável para o eixo X:", numeric_cols)
-        y = st.selectbox("Selecione a variável para o eixo Y:", numeric_cols)
-
-        chart_df = df[[x, y]].dropna()
-
-        st.write("Gráfico de dispersão:")
-        st.scatter_chart(chart_df, x=x, y=y)
+    if len(numeric_cols) < 1:
+        st.warning("Não há colunas numéricas suficientes para gerar gráficos.")
     else:
-        st.warning("O dataset não possui colunas numéricas suficientes para o gráfico.")
+        chart_type = st.selectbox(
+            "Escolha o tipo de gráfico:",
+            ["Histograma", "Dispersão", "Linha"]
+        )
+
+        if chart_type == "Histograma":
+            coluna = st.selectbox("Selecione a coluna:", numeric_cols)
+            chart = alt.Chart(df).mark_bar().encode(
+                x=alt.X(coluna, bin=True),
+                y='count()'
+            ).properties(width=700, height=400)
+            st.altair_chart(chart, use_container_width=True)
+
+        elif chart_type == "Dispersão":
+            x = st.selectbox("Eixo X:", numeric_cols)
+            y = st.selectbox("Eixo Y:", numeric_cols)
+
+            chart = alt.Chart(df).mark_circle(size=60).encode(
+                x=x,
+                y=y,
+                tooltip=[x, y]
+            ).properties(width=700, height=400)
+
+            st.altair_chart(chart, use_container_width=True)
+
+        elif chart_type == "Linha":
+            coluna = st.selectbox("Selecione a coluna:", numeric_cols)
+            df_reset = df.reset_index().rename(columns={"index": "Índice"})
+
+            chart = alt.Chart(df_reset).mark_line().encode(
+                x='Índice',
+                y=coluna
+            ).properties(width=700, height=400)
+
+            st.altair_chart(chart, use_container_width=True)
+
 else:
-    st.info("Aguardando upload do arquivo...")
+    st.info("👆 Envie um CSV para iniciar.")
