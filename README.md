@@ -52,6 +52,28 @@ O objetivo desta aplicação é permitir:
 ## Como Executar
 
 ### Instale as dependências:
-
-```bash
 pip install streamlit pandas altair
+
+Ou instale usando o arquivo de requisitos:
+pip install -r requirements.txt
+
+---
+
+## Estrutura do Projeto
+├── app.py  
+├── requirements.txt  
+└── runtime.txt  
+
+---
+
+## Descrição dos arquivos
+app.py: contém o código principal da aplicação.  
+requirements.txt: lista das dependências necessárias.  
+runtime.txt: define a versão do Python utilizada no deploy.  
+
+---
+
+## Observações
+Apenas colunas numéricas são exibidas nos gráficos.  
+O projeto foi desenvolvido com foco nos requisitos da atividade de Análise Exploratória de Dados.  
+O aplicativo funciona tanto localmente quanto via Streamlit Cloud.
