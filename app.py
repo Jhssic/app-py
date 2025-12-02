@@ -3,7 +3,7 @@ import pandas as pd
 
 st.set_page_config(page_title="Análise Exploratória Interativa", layout="wide")
 
-st.title("📊 Análise Exploratória Interativa com Streamlit")
+st.title("Análise Exploratória Interativa com Streamlit")
 
 st.write("""
 Este aplicativo realiza **Análise Exploratória de Dados (EDA)** de forma simples e interativa.
@@ -17,15 +17,15 @@ if uploaded_file:
     # 2. Estruturar DataFrame
     df = pd.read_csv(uploaded_file)
 
-    st.subheader("🧾 Primeiras linhas do DataFrame")
+    st.subheader("Primeiras linhas do DataFrame")
     st.write(df.head())  # 3. Exibir primeiras linhas
 
     # 4. Estatísticas descritivas
-    st.subheader("📈 Estatísticas Descritivas")
+    st.subheader("Estatísticas Descritivas")
     st.write(df.describe(include="all"))
 
     # 5. Visualização interativa
-    st.subheader("📊 Visualização Interativa")
+    st.subheader("Visualização Interativa")
 
     # pega só colunas numéricas
     numeric_cols = df.select_dtypes(include="number").columns
